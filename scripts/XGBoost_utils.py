@@ -10,7 +10,7 @@ def prepare_data_value(stock, horizon_prev, test_size, window_size):
     stock_copy = stock_copy.iloc[split - window_size:].copy()
 
     stock_copy['Date'] = pd.to_datetime(stock_copy['Date'])
-    stock_copy.drop(columns=["Volume", "Adj Close"], inplace=True)
+    stock_copy.drop(columns=["Volume", "Adj Close", "High", 'Low', "Open"], inplace=True)
 
     stock_copy["Target"] = stock_copy["Close"].shift(-horizon_prev)
     stock_copy.dropna(inplace=True)

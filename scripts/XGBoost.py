@@ -47,7 +47,7 @@ class PortfolioPredictionXGBoost_value():
 
     def compute_stock_returns(self, predicted_df):
 
-        predicted_df = predicted_df.drop(columns=["Target", "High", "Low", "Open"])
+        predicted_df = predicted_df.drop(columns=["Target"])
 
         predicted_df['Real_Return'] = predicted_df['Close'].pct_change()
         predicted_df['Predicted_Return'] = predicted_df['Prediction'].pct_change()
