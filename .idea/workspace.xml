@@ -46,7 +46,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/axel/Documents/École/Université/M2/M2_S1/finance_quant/train_test_split",
+    "last_opened_file_path": "/Users/axel/Documents/École/Université/M2/M2_S1/finance_quant/forecast_horizon",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -58,6 +58,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/forecast_horizon" />
       <recent name="$PROJECT_DIR$/train_test_split" />
       <recent name="$PROJECT_DIR$/notebooks" />
     </key>
@@ -89,6 +90,7 @@
       <workItem from="1706691570367" duration="10707000" />
       <workItem from="1706716131063" duration="16073000" />
       <workItem from="1706774046032" duration="18556000" />
+      <workItem from="1706876854125" duration="395000" />
     </task>
     <servers />
   </component>
