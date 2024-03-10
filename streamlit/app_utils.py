@@ -2,6 +2,7 @@ import streamlit as st
 import yfinance as yf
 import os
 
+
 def display_title_and_instructions():
     """
     Display title and instructions for the stock market prediction application.
@@ -14,11 +15,18 @@ def display_title_and_instructions():
 
 
 def select_assets():
-    actif_interne = st.multiselect("Veuillez choisir un ou plusieurs actif(s) \n",
-                                   ["Apple", "Amazon", "Google", "Microsoft", "Exxon"])
+    """
+    Function to select assets and download their data if necessary.
+
+    Returns:
+    bool: True if assets are selected, False otherwise.
+    """
+    actif_interne = st.multiselect("Veuillez choisir un ou plusieurs actif(s)",
+                                   ["Apple", "Amazon", "Google",
+                                    "Microsoft", "Exxon"])
     actif_externe = st.text_input("Si vous voulez rajouter un actif, "
                                   "veuillez préciser son symbole boursier : ")
-    
+
     if actif_interne or actif_externe:
         selected_assets = ', '.join(actif_interne)
         if actif_externe:
@@ -28,20 +36,22 @@ def select_assets():
             if not os.path.exists('data'):
                 os.makedirs('data')
 
-            # Télécharger les données pour l'actif externe
-            data = yf.download(actif_externe, start="2013-01-02", end="2023-12-29")
+            data = yf.download(actif_externe,
+                               start="2013-01-02",
+                               end="2023-12-29")
             data.reset_index(inplace=True)
             if data.shape[0] > 0:
                 data.to_csv(f"./data/{actif_externe}.csv")
                 st.write(f"Données téléchargées pour {actif_externe} :")
                 st.dataframe(data.tail())
             else: 
-                st.write("Données non disponibles pour cet actif, avez vous fait une faute?")
+                st.write("Données non disponibles pour"
+                         "cet actif, avez vous fait une faute?")
 
-        st.write(f"Vous avez sélectionné les actifs suivants : {selected_assets}")
+        st.write(
+            f"Vous avez sélectionné les actifs suivants : {selected_assets}")
         return True
     return False
-
 
 
 def choose_prediction_type():
@@ -51,6 +61,7 @@ def choose_prediction_type():
     It then creates buttons for each choice and updates the session state
     based on the user's selection.
     """
+
     st.write("Voulez-vous prédire la volatilité ou le prix ?")
     prix_col, volatilite_col = st.columns(2)
     with prix_col:
@@ -91,6 +102,7 @@ def prediction_horizon():
     it writes a message about the selected model and prompts the user
     to select a prediction horizon.
     """
+
     if 'modele' in st.session_state:
         modele = st.session_state['modele']
         st.write(f"Vous avez sélectionné un modèle {modele}, excellent choix!")
