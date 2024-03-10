@@ -1,6 +1,8 @@
+import sys
+sys.path.append("./scripts")
 from fastapi import FastAPI
 from pydantic import BaseModel
-from main import forecast
+from main import *
 
 class User_input(BaseModel):
     tickers:list
@@ -8,12 +10,8 @@ class User_input(BaseModel):
     target :str
     horizon : int
 
-app = FastAPI()
+app = FastAPI(debug = True)
 @app.post("/prediction")
 def operate(input: User_input):
-    stocks  = forecast.get_stocks()
-    pred = forecast.get_prediction()
-    metric = forecast.get_metrics()
-
-    result = forecast.run()
-    return result
+    pred, ptf, error = forecast(User_input.tickers,User_input.model,User_input.target,User_input.horizon).run()
+    return pred, ptf, error
