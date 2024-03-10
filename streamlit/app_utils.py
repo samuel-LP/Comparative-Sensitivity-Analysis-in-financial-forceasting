@@ -1,11 +1,12 @@
 import streamlit as st
-
+import yfinance as yf
+import os
 
 def display_title_and_instructions():
     """
     Display title and instructions for the stock market prediction application.
     """
-    st.title("Bienvenue stock market prediction !")
+    st.title("Bienvenue sur stock market prediction !")
     st.write("Cette application a pour objectif de vous permettre d'estimer "
              "l'évolution de votre portefeuille d'actifs. \n"
              "Pour vous permettre de voir vos prédictions, "
@@ -13,27 +14,34 @@ def display_title_and_instructions():
 
 
 def select_assets():
-    """
-    A function that allows the user to select assets and returns
-    True if any assets are selected, otherwise False.
-    """
-    actif_interne = st.multiselect(
-        "Veuillez choisir un ou plusieurs actif(s) \n",
-        ["Apple", "Amazon", "Google",
-         "Microsoft", "Exxon"])
-    actif_externe = st.text_input("Si aucun actif ne vous correspond, "
-                                  "veuillez préciser votre actif ici: ")
+    actif_interne = st.multiselect("Veuillez choisir un ou plusieurs actif(s) \n",
+                                   ["Apple", "Amazon", "Google", "Microsoft", "Exxon"])
+    actif_externe = st.text_input("Si vous voulez rajouter un actif, "
+                                  "veuillez préciser son symbole boursier : ")
+    
     if actif_interne or actif_externe:
         selected_assets = ', '.join(actif_interne)
         if actif_externe:
             if selected_assets:
                 selected_assets += ', '
             selected_assets += actif_externe
+            if not os.path.exists('data'):
+                os.makedirs('data')
 
-        st.write(
-            f"Vous avez sélectionné les actifs suivants : {selected_assets}")
+            # Télécharger les données pour l'actif externe
+            data = yf.download(actif_externe, start="2013-01-02", end="2023-12-29")
+            data.reset_index(inplace=True)
+            if data.shape[0] > 0:
+                data.to_csv(f"./data/{actif_externe}.csv")
+                st.write(f"Données téléchargées pour {actif_externe} :")
+                st.dataframe(data.tail())
+            else: 
+                st.write("Données non disponibles pour cet actif, avez vous fait une faute?")
+
+        st.write(f"Vous avez sélectionné les actifs suivants : {selected_assets}")
         return True
     return False
+
 
 
 def choose_prediction_type():
