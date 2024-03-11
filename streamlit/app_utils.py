@@ -1,6 +1,8 @@
 import streamlit as st
 import yfinance as yf
 import os
+import requests
+import json
 
 
 def display_title_and_instructions():
@@ -41,16 +43,16 @@ def select_assets():
                                end="2023-12-29")
             data.reset_index(inplace=True)
             if data.shape[0] > 0:
-                data.to_csv(f"./data/{actif_externe}.csv")
+                data.to_csv(f"data/{actif_externe}.csv")
                 st.write(f"Données téléchargées pour {actif_externe} :")
                 st.dataframe(data.tail())
-            else: 
+            else:
                 st.write("Données non disponibles pour"
                          "cet actif, avez vous fait une faute?")
 
         st.write(
             f"Vous avez sélectionné les actifs suivants : {selected_assets}")
-        return True
+        return selected_assets
     return False
 
 
@@ -111,3 +113,41 @@ def prediction_horizon():
                                   options=['1 jour', '7 jours',
                                            '14 jours', "28 jours"],
                                   key=f'horizon_{modele}')
+
+        if option == '1 jour':
+            st.session_state['horizon'] = 1
+        elif option == '7 jours':
+            st.session_state['horizon'] = 7
+        elif option == '14 jours':
+            st.session_state['horizon'] = 14
+        elif option == '28 jours':
+            st.session_state['horizon'] = 28
+
+
+def send_request_to_api():
+    # Bouton pour lancer la prédiction
+    if st.button("Voir les prévisions"):
+        data = {
+            "tickers": st.session_state['actifs'],
+            "model": st.session_state['modele'],
+            "target": st.session_state['prediction'],
+            "horizon": st.session_state['horizon']
+        }
+
+        response = None  # Initialiser la variable de réponse
+        try:
+            response = requests.post(
+                url="http://127.0.0.1:8000/predict/",
+                json=data
+            )
+            if response.status_code == 200:
+                predictions = response.json()
+                st.write(predictions)  # Simple affichage des prédictions
+            else:
+                # Affichage d'une erreur avec plus de détails si la réponse n'est pas 200 OK
+                st.error(f"Erreur lors de la récupération des prévisions. Statut HTTP: {response.status_code}, Réponse: {response.text}")
+        except Exception as e:
+            st.error(f"Erreur lors de l'envoi de la requête : {e}")
+            # Affichez des détails sur la réponse si disponible
+            if response is not None:
+                st.error(f"Détails de l'erreur : Statut HTTP: {response.status_code}, Réponse: {response.text}")

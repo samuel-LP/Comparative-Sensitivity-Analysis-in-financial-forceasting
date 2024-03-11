@@ -1,8 +1,7 @@
 import pandas as pd
-from XGBoost_utils import prepare_data_value, prepare_data_volatility
+from scripts.XGBoost_utils import prepare_data_value, prepare_data_volatility
 from tqdm import tqdm
 from xgboost import XGBRegressor
-
 
 class PortfolioPredictionXGBoost_value():
     def __init__(self, stock_dict, window_size, test_size, horizon_prev):
@@ -13,8 +12,7 @@ class PortfolioPredictionXGBoost_value():
 
     def XG_boost_rolling_window(self, stock: pd.DataFrame):
 
-        stock = prepare_data_value(stock, self.horizon_prev,
-                                   self.test_size, self.window_size)
+        stock = prepare_data_value(stock, self.horizon_prev, self.test_size, self.window_size)
         prediction_dates = []
         predictions = []
 
@@ -49,7 +47,7 @@ class PortfolioPredictionXGBoost_value():
 
     def compute_stock_returns(self, predicted_df):
 
-        predicted_df = predicted_df.drop(columns=["Target", "Adj Close", "High", "Low", "Open"])
+        predicted_df = predicted_df.drop(columns=["Target"])
 
         predicted_df['Real_Return'] = predicted_df['Close'].pct_change()
         predicted_df['Predicted_Return'] = predicted_df['Prediction'].pct_change()
