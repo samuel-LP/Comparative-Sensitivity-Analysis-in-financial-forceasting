@@ -7,12 +7,34 @@ The paper undertakes a sensitivity analysis of two cutting-edge Machine Learning
 
 ## Repository Structure
 The repository is structured into several folders, each containing Jupyter notebooks and Python scripts that correspond to different aspects of the analysis:
+- **notebooks** : 
+  - **Forecast_horizon**: Contains Jupyter notebooks for the sensitivity analysis on the forecast horizon both for LSTM and XGBoost models. 
+  Each filenames indicates the forecast horizon (e.g., LSTM_Value_7.ipynb corresponds to an LSTM model predicting 7 days ahead).
+  - **Time_split**: Contains Jupyter notebooks for the sensitivity analysis of the time split both for LSTM and XGBoost models. 
+  Each filenames indicates the split used (e.g., LSTM_Value_80_20.ipynb corresponds to an LSTM model with a 80%/20% train test split).
+- **Scripts**: Includes Python scripts with the core functions and utilities used by the Jupyter notebooks. LSTM.py and XGBoost.py contain the model definitions, while LSTM_utils.py and XGBoost_utils.py include helper functions for data preprocessing, feature extraction, and other necessary operations. This folder also contains the script needed to run the streamlit app.
 
-- **Forecast_horizon**: Contains Jupyter notebooks for the sensitivity analysis on the forecast horizon both for LSTM and XGBoost models. 
-Each filenames indicates the forecast horizon (e.g., LSTM_Value_7.ipynb corresponds to an LSTM model predicting 7 days ahead).
-- **Time_split**: Contains Jupyter notebooks for the sensitivity analysis of the time split both for LSTM and XGBoost models. 
-Each filenames indicates the split used (e.g., LSTM_Value_80_20.ipynb corresponds to an LSTM model with a 80%/20% train test split).
-- **Scripts**: Includes Python scripts with the core functions and utilities used by the Jupyter notebooks. LSTM.py and XGBoost.py contain the model definitions, while LSTM_utils.py and XGBoost_utils.py include helper functions for data preprocessing, feature extraction, and other necessary operations.
+## To run the Streamlit App and the FastAPI 
+
+To run the streamlit app, you need to start the fastAPI server et the streamlit app itself : 
+    
+```bash
+uvicorn scripts.fast_api:app --reload
+
+streamlit run ./scripts/app.py      
+```
+
+If you wants to get results without running the app, you can start the FastAPI server and then make a post command to send this type of json : 
+
+```bash
+{
+  "tickers":["AMZN"],
+  "model":"LSTM",
+  "target" :"Value",
+  "horizon" : 7
+}
+
+```
 
 ## To replicate the findings or conduct your own analysis:
 
