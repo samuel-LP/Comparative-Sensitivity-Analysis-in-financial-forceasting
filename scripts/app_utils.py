@@ -1,17 +1,19 @@
+import pandas as pd
 import streamlit as st
 import yfinance as yf
 import os
 import requests
-import json
+import plotly.graph_objects as go
 
+import json
 
 def display_title_and_instructions():
     """
     Display title and instructions for the stock market prediction application.
     """
-    st.title("Bienvenue sur stock market prediction !")
-    st.write("Cette application a pour objectif de vous permettre d'estimer "
-             "l'évolution de votre portefeuille d'actifs. \n"
+    st.title("Bienvenue sur Stock Prediction !")
+    st.markdown("#### Cette application a pour objectif de vous permettre d'estimer "
+             "l'évolution de votre portefeuille d'actifs."
              "Pour vous permettre de voir vos prédictions, "
              "nous avons besoin des informations suivantes : \n")
 
@@ -23,11 +25,13 @@ def select_assets():
     Returns:
     bool: True if assets are selected, False otherwise.
     """
+    st.markdown("\n \n")
+    st.markdown("##### Choix des Actifs :")
     actif_interne = st.multiselect("Veuillez choisir un ou plusieurs actif(s)",
                                    ["AMZN", "GOOG",
                                     "MSFT", "XOM"])
     actif_externe = st.text_input("Si vous voulez rajouter un actif, "
-                                  "veuillez préciser son symbole boursier : ")
+                                  "veuillez préciser son ticker : ")
 
     if actif_interne or actif_externe:
         selected_assets = ', '.join(actif_interne)
@@ -65,11 +69,10 @@ def choose_prediction_type():
     It then creates buttons for each choice and updates the session state
     based on the user's selection.
     """
+    st.markdown("\n \n")
+    st.markdown("##### Choix de la Cible :")
 
-    st.write("Voulez-vous prédire la volatilité ou le prix ?")
-
-    # Utiliser des boutons radio pour le choix
-    prediction_choice = st.radio("Choisissez une option :",
+    prediction_choice = st.radio("Voulez-vous prédire la volatilité ou le prix ?",
                                  ('Prix', 'Volatilité'))
 
     # Mettre à jour st.session_state basé sur le choix
@@ -90,15 +93,16 @@ def model_selection():
         if  st.session_state['prediction'] == 'Volatility':
             st.write("Vous avez sélectionné la volatilité")
 
-        st.write("Quel modèle de prédiction voulez-vous utiliser?")
-        xgb_col, lstm_col = st.columns(2)
-        with xgb_col:
-            xgb_btn = st.button('XGBoost', key='xgb')
-        with lstm_col:
-            lstm_btn = st.button('LSTM', key='lstm')
-        if xgb_btn:
-            st.session_state['modele'] = 'XGBoost'
-        elif lstm_btn:
+        st.markdown("\n \n")
+        st.markdown("##### Choix du Modèle :")
+
+        model_choice = st.radio("Quel modèle voulez vous utiliser ?",
+                                     ('XGBoost', 'LSTM'))
+
+        # Mettre à jour st.session_state basé sur le choix
+        if model_choice == 'XGBoost':
+            st.session_state['modele'] = 'XGB'
+        else :
             st.session_state['modele'] = 'LSTM'
 
 
@@ -112,8 +116,12 @@ def prediction_horizon():
     if 'modele' in st.session_state:
         modele = st.session_state['modele']
         st.write(f"Vous avez sélectionné un modèle {modele}, excellent choix!")
-        st.write("Veuillez maintenant sélectionner un horizon de prédiction")
-        option = st.select_slider("",
+
+        st.markdown("\n \n")
+        st.markdown("##### Choix de l'Horizon de Prédiction :")
+
+
+        option = st.select_slider("Veuillez maintenant sélectionner un horizon de prédiction",
                                   options=['1 jour', '7 jours',
                                            '14 jours', "28 jours"],
                                   key=f'horizon_{modele}')
@@ -127,11 +135,49 @@ def prediction_horizon():
         elif option == '28 jours':
             st.session_state['horizon'] = 28
 
+def plot_predictions(container, predictions, selected_value):
+    value = pd.DataFrame(json.loads(predictions[selected_value]))
+    value['Date'] = pd.to_datetime(value['Date'], unit='ms')
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=value['Date'], y=value['Close'], mode='lines', name='réel'))
+    fig.add_trace(go.Scatter(x=value['Date'], y=value['Prediction'], mode='lines', name='prédit'))
+    fig.update_layout(title=f"Évolution de la valeur de {selected_value}",
+                      xaxis_title='Date',
+                      yaxis_title='Valeur')
+
+    container.plotly_chart(fig)
+
+def plot_ptf(container, ptf):
+    ptf_avg = pd.DataFrame(json.loads(ptf))
+    ptf_avg['Date'] = pd.to_datetime(ptf_avg['Date'], unit='ms')
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(x=ptf_avg['Date'], y=ptf_avg['Predicted_Portfolio_Value'], mode='lines', name='Predicted'))
+    fig.add_trace(go.Scatter(x=ptf_avg['Date'],
+                             y=ptf_avg['Predicted_Portfolio_Value'],
+                             mode='lines',
+                             fill='tozeroy',
+                             opacity=0.3,
+                             showlegend=False))
+
+    fig.add_trace(go.Scatter(x=ptf_avg['Date'], y=ptf_avg['Real_Portfolio_Value'], mode='lines', name='Real'))
+    fig.add_trace(go.Scatter(x=ptf_avg['Date'],
+                             y=ptf_avg['Real_Portfolio_Value'],
+                             mode='lines',
+                             fill='tozeroy',
+                             opacity=0.3,
+                             showlegend=False))
+
+    fig.update_layout(title=f"Évolution de la valeur du portefeuille",
+                      xaxis_title='Date',
+                      yaxis_title='Valeur')
+
+    container.plotly_chart(fig)
+
 
 def send_request_to_api():
-    # Bouton pour lancer la prédiction
-    if st.button("Voir les prévisions"):
-
         data = {
             "tickers": st.session_state['actifs'],
             "model": st.session_state['modele'],
@@ -139,20 +185,26 @@ def send_request_to_api():
             "horizon": st.session_state['horizon']
         }
 
-        response = None  # Initialiser la variable de réponse
+        response = None
         try:
             response = requests.post(
                 url="http://127.0.0.1:8000/prediction/",
                 json=data
             )
             if response.status_code == 200:
-                predictions = response.json()
-                st.write(predictions)  # Simple affichage des prédictions
-            else:
-                # Affichage d'une erreur avec plus de détails si la réponse n'est pas 200 OK
-                st.error(f"Erreur lors de la récupération des prévisions. Statut HTTP: {response.status_code}, Réponse: {response.text}")
+                response_data = response.json()
+
+                predictions = response_data["predictions"]
+                portfolio = response_data["portfolio"]
+                error = response_data["error"]
+
+                return(predictions, portfolio, error)
+
+
+
         except Exception as e:
             st.error(f"Erreur lors de l'envoi de la requête : {e}")
-            # Affichez des détails sur la réponse si disponible
             if response is not None:
                 st.error(f"Détails de l'erreur : Statut HTTP: {response.status_code}, Réponse: {response.text}")
+
+
