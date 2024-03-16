@@ -1,3 +1,5 @@
+import time
+
 from app_utils import *
 
 import streamlit as st
@@ -17,18 +19,20 @@ def main():
 
 
     if st.session_state['horizon'] is not None:
-
         if st.button("Voir les prévisions") or 'predictions' in st.session_state:
-            if 'predictions' not in st.session_state:
-                preds, ptf, errors = send_request_to_api()
-                st.session_state['predictions'] = preds
-                st.session_state["ptf"] = ptf
-                st.session_state['errors'] = errors
-            else:
-                preds = st.session_state['predictions']
-                ptf = st.session_state["ptf"]
-                errors = st.session_state['errors']
 
+            with st.spinner('Prédiction en cours ...'):
+                if 'predictions' not in st.session_state:
+                    preds, ptf, errors = send_request_to_api()
+                    st.session_state['predictions'] = preds
+                    st.session_state["ptf"] = ptf
+                    st.session_state['errors'] = errors
+                else:
+                    preds = st.session_state['predictions']
+                    ptf = st.session_state["ptf"]
+                    errors = st.session_state['errors']
+
+            st.success("Prédiction réussie !")
             st.markdown("\n")
             st.markdown("#### Visualisations des Résultats : ")
             st.markdown("##### Prédiction de la valeur de votre Portefeuille : ")
