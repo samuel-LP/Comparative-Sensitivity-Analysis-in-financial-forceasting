@@ -4,7 +4,7 @@ div.row-widget.stRadio > div {
 }
 
 div.row-widget.stRadio > div[role="radiogroup"] > label[data-baseweb="radio"]  {
- background-color: #c8e1bf;
+ background-color: #afbcde;
  textColor: #FEFEFE;
  padding-right: 10px;
  padding-left: 4px;

@@ -59,4 +59,5 @@ def compute_errors_volatility(dict_df, ptf):
 
         resultats.loc[actif] = [mse, rmse, mae]
 
+    resultats = resultats.reset_index()
     return resultats

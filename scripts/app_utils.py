@@ -136,45 +136,87 @@ def prediction_horizon():
             st.session_state['horizon'] = 28
 
 def plot_predictions(container, predictions, selected_value):
-    value = pd.DataFrame(json.loads(predictions[selected_value]))
-    value['Date'] = pd.to_datetime(value['Date'], unit='ms')
+    if st.session_state["prediction"] == "Value" :
+        value = pd.DataFrame(json.loads(predictions[selected_value]))
+        value['Date'] = pd.to_datetime(value['Date'], unit='ms')
 
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=value['Date'], y=value['Close'], mode='lines', name='réel'))
-    fig.add_trace(go.Scatter(x=value['Date'], y=value['Prediction'], mode='lines', name='prédit'))
-    fig.update_layout(title=f"Évolution de la valeur de {selected_value}",
-                      xaxis_title='Date',
-                      yaxis_title='Valeur')
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=value['Date'], y=value['Close'], mode='lines', name='réel'))
+        fig.add_trace(go.Scatter(x=value['Date'], y=value['Prediction'], mode='lines', name='prédit'))
+        fig.update_layout(title=f"Évolution de la valeur de {selected_value}",
+                          xaxis_title='Date',
+                          yaxis_title='Valeur')
 
-    container.plotly_chart(fig)
+        container.plotly_chart(fig)
+    else :
+        value = pd.DataFrame(json.loads(predictions[selected_value]))
+        value['Date'] = pd.to_datetime(value['Date'], unit='ms')
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=value['Date'], y=value['Volatility'], mode='lines', name='réel'))
+        fig.add_trace(go.Scatter(x=value['Date'], y=value['Prediction'], mode='lines', name='prédit'))
+        fig.update_layout(title=f"Évolution de la valeur de {selected_value}",
+                          xaxis_title='Date',
+                          yaxis_title='Valeur')
+
+        container.plotly_chart(fig)
+
 
 def plot_ptf(container, ptf):
-    ptf_avg = pd.DataFrame(json.loads(ptf))
-    ptf_avg['Date'] = pd.to_datetime(ptf_avg['Date'], unit='ms')
+    if st.session_state["prediction"] == "Value" :
+        ptf_avg = pd.DataFrame(json.loads(ptf))
+        ptf_avg['Date'] = pd.to_datetime(ptf_avg['Date'], unit='ms')
 
-    fig = go.Figure()
+        fig = go.Figure()
 
-    fig.add_trace(go.Scatter(x=ptf_avg['Date'], y=ptf_avg['Predicted_Portfolio_Value'], mode='lines', name='Predicted'))
-    fig.add_trace(go.Scatter(x=ptf_avg['Date'],
-                             y=ptf_avg['Predicted_Portfolio_Value'],
-                             mode='lines',
-                             fill='tozeroy',
-                             opacity=0.3,
-                             showlegend=False))
+        fig.add_trace(go.Scatter(x=ptf_avg['Date'], y=ptf_avg['Predicted_Portfolio_Value'], mode='lines', name='Predicted'))
+        fig.add_trace(go.Scatter(x=ptf_avg['Date'],
+                                 y=ptf_avg['Predicted_Portfolio_Value'],
+                                 mode='lines',
+                                 fill='tozeroy',
+                                 opacity=0.3,
+                                 showlegend=False))
 
-    fig.add_trace(go.Scatter(x=ptf_avg['Date'], y=ptf_avg['Real_Portfolio_Value'], mode='lines', name='Real'))
-    fig.add_trace(go.Scatter(x=ptf_avg['Date'],
-                             y=ptf_avg['Real_Portfolio_Value'],
-                             mode='lines',
-                             fill='tozeroy',
-                             opacity=0.3,
-                             showlegend=False))
+        fig.add_trace(go.Scatter(x=ptf_avg['Date'], y=ptf_avg['Real_Portfolio_Value'], mode='lines', name='Real'))
+        fig.add_trace(go.Scatter(x=ptf_avg['Date'],
+                                 y=ptf_avg['Real_Portfolio_Value'],
+                                 mode='lines',
+                                 fill='tozeroy',
+                                 opacity=0.3,
+                                 showlegend=False))
 
-    fig.update_layout(title=f"Évolution de la valeur du portefeuille",
-                      xaxis_title='Date',
-                      yaxis_title='Valeur')
+        fig.update_layout(title=f"Évolution de la valeur du portefeuille",
+                          xaxis_title='Date',
+                          yaxis_title='Valeur')
 
-    container.plotly_chart(fig)
+        container.plotly_chart(fig)
+    else :
+        ptf_avg = pd.DataFrame(json.loads(ptf))
+        ptf_avg['Date'] = pd.to_datetime(ptf_avg['Date'], unit='ms')
+
+        fig = go.Figure()
+
+        fig.add_trace(go.Scatter(x=ptf_avg['Date'], y=ptf_avg['Prediction'], mode='lines', name='Predicted'))
+        fig.add_trace(go.Scatter(x=ptf_avg['Date'],
+                                 y=ptf_avg['Prediction'],
+                                 mode='lines',
+                                 fill='tozeroy',
+                                 opacity=0.3,
+                                 showlegend=False))
+
+        fig.add_trace(go.Scatter(x=ptf_avg['Date'], y=ptf_avg['Volatility'], mode='lines', name='Real'))
+        fig.add_trace(go.Scatter(x=ptf_avg['Date'],
+                                 y=ptf_avg['Volatility'],
+                                 mode='lines',
+                                 fill='tozeroy',
+                                 opacity=0.3,
+                                 showlegend=False))
+
+        fig.update_layout(title=f"Évolution de la valeur du portefeuille",
+                          xaxis_title='Date',
+                          yaxis_title='Valeur')
+
+        container.plotly_chart(fig)
 
 
 def send_request_to_api():
