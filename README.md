@@ -6,8 +6,9 @@ Welcome on our application for financial forecasting !
 The aims of the application is to predict the evolution of a financial asset among the time.
 
 You can choose multiple options here :
+- The asset : you can choose one of the pre-load datas, or choose one directly on the application
 - the target : do you want to predict the price or the volatility of the asset ?
-- the model : do you want a deep learning model (with LSTM) or a machine learning model (XGBoost)?
+- the model : do you want a deep learning model (with LSTM) or a machine learning model (with XGBoost) ?
 - the horizon of prediction : 1 day, 7 days, 14 days or 28 days ?
 
 This application is developped in streamlit and use fast API.
