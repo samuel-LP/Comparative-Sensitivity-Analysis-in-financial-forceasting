@@ -53,7 +53,7 @@ class forecast():
         self.predictions, self.ptf_avg = model.predict_avg_portfolio()
 
     def get_metrics(self):
-        if self.target == 'Value' :
+        if self.target == 'Value':
             self.errors = compute_errors(self.predictions, self.ptf_avg)
         else :
             self.errors = compute_errors_volatility(self.predictions, self.ptf_avg)
@@ -63,7 +63,3 @@ class forecast():
         self.get_prediction()
         self.get_metrics()
         return(self.predictions, self.ptf_avg, self.errors)
-
-
-
-

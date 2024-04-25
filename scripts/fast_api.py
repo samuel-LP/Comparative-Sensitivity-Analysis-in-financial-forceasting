@@ -4,13 +4,16 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from main import *
 
+
 class User_input(BaseModel):
+
     tickers : list
     model : str
     target : str
     horizon : int
 
-app = FastAPI(debug = True)
+
+app = FastAPI(debug=True)
 @app.post("/prediction")
 def operate(input:User_input):
     model = forecast(input.tickers,
