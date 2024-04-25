@@ -1,4 +1,4 @@
-# Financial forecasting application with LSTM and XGBoost 📈
+# Financial forecasting application 📈
 
 ## Presentation
 
