@@ -6,7 +6,7 @@ Welcome on our application for financial forecasting ! \
 The aims of the application is to predict the evolution of a financial asset among the time.
 
 You can choose multiple options here :
-- The asset : you can choose one of the pre-load datas, or choose one directly on the application.
+- The asset : you can choose one of the pre-load asset datas, or choose one directly on the application.
 - the target : do you want to predict the price or the volatility of the asset ?
 - the model : do you want a deep learning model (with LSTM) or a machine learning model (with XGBoost) ?
 - the horizon of prediction : 1 day, 7 days, 14 days or 28 days ?
@@ -50,7 +50,7 @@ If you wants to get results without running the app, you can start the FastAPI s
 1. Clone the repository
 
     ```bash
-    git clone https://github.com/samuel-LP/finance_quant.git
+    git clone git@github.com:samuel-LP/financial-forecasting-app.git
     ```
 
 2. Create a virtual environnement
