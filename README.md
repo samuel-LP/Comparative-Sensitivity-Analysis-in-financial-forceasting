@@ -33,7 +33,7 @@ uvicorn scripts.fast_api:app --reload
 streamlit run ./scripts/app.py      
 ```
 
-If you wants to get results without running the app, you can start the FastAPI server and then make a post command to send this type of json : 
+If you want to get results without running the app, you can start the FastAPI server and then make a post command to send this type of json : 
 
 ```bash
 {
