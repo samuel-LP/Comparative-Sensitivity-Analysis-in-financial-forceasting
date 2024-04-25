@@ -1,10 +1,18 @@
-# Comparative Sensitivity Analysis of LSTM and XGBoost in Financial Forecasting 📈
+# Financial forecasting application with LSTM and XGBoost 📈
 
-Welcome to the repository for the project on "Comparative Sensitivity Analysis of LSTM and XGBoost in Financial Forecasting". This repository holds the complete codebase used to conduct the analysis presented in the associated paper.
+## Presentation
 
-## Abstract of the Paper
-The paper undertakes a sensitivity analysis of two cutting-edge Machine Learning models - Long Short-Term Memory (LSTM) and Extreme Gradient Boosting (XGBoost) - in the context of financial forecasting. The aim is to evaluate the performance of these models in predicting stock closing prices and market volatility, with particular attention to the forecast horizon and the division of data into training and testing sets. An equiweighted portfolio comprising five S&P 500 stocks forms the basis of our analysis. We methodically investigate how changing forecast horizons and training/testing data splits affect the precision and robustness of LSTM and XGBoost models in price forecasting and volatility estimation. The results provide valuable insights into the models' adaptability and efficiency when applied to financial data, highlighting the crucial roles of model tuning and data structuring in enhancing forecast accuracy. This research serves as a useful resource for financial practitioners who aim to leverage these models for more precise market predictions.
+Welcome on our application for financial forecasting !
+The aims of the application is to predict the evolution of a financial asset among the time.
 
+You can choose multiple options here :
+- the target : do you want to predict the price or the volatility of the asset ?
+- the model : do you want a deep learning model (with LSTM) or a machine learning model (XGBoost)?
+- the horizon of prediction : 1 day, 7 days, 14 days or 28 days ?
+
+This application is developped in streamlit and use fast API.
+
+Enjoy!
 ## Repository Structure
 The repository is structured into several folders, each containing Jupyter notebooks and Python scripts that correspond to different aspects of the analysis:
 - **notebooks** : 
