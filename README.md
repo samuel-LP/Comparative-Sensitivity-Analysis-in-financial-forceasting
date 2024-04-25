@@ -2,7 +2,7 @@
 
 ## Presentation
 
-Welcome on our application for financial forecasting ! \\
+Welcome on our application for financial forecasting ! \
 The aims of the application is to predict the evolution of a financial asset among the time.
 
 You can choose multiple options here :
