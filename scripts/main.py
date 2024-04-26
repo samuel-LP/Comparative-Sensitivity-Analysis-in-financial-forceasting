@@ -27,14 +27,14 @@ class forecast():
             if self.target == 'Value':
                 model = PortfolioPredicitionsLSTM_value(self.stocks_dic,
                                        n_steps = 30,
-                                       epochs = 1,
+                                       epochs = 50,
                                        horizon_prev = self.horizon,
                                        test_size = 0.8)
 
             else :
                 model = PortfolioPredicitionsLSTM_volatility(self.stocks_dic,
                                        n_steps = 30,
-                                       epochs = 1,
+                                       epochs = 50,
                                        horizon_prev = self.horizon,
                                        test_size = 0.8)
         else :
