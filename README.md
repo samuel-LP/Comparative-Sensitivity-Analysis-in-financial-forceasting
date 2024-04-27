@@ -50,7 +50,7 @@ If you want to get results without running the app, you can start the FastAPI se
 1. Clone the repository
 
     ```bash
-    git clone git@github.com:samuel-LP/financial-forecasting-app.git
+    git clone https://github.com/samuel-LP/financial-forecasting-app.git
     ```
 
 2. Create a virtual environnement
